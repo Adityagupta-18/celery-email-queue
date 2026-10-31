@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Celery Demo</title>
+</head>
+<body style="font-family: sans-serif; text-align: center; margin-top: 100px;">
+    <h1>Send Bulk Emails</h1>
+    <p>Click below to send welcome emails to 10 users.</p>
+    <form action="{% url 'mail_sender' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" style="padding: 10px 20px; font-size: 16px;">
+            Send Emails
+        </button>
+    </form>
+</body>
+</html>
