@@ -2,21 +2,35 @@ from django.shortcuts import render,redirect
 from django.core.mail import send_mail
 from django.conf import settings
 from .tasks import send_welcome_emails
+from celery.result import AsyncResult
+from django.http import JsonResponse
+
 
 # Create your views here.
 def home(request):
     return render(request,'home.html')
 
 
-
 def mail_sent(request):
     if request.method == 'POST':
-        send_welcome_emails.delay()
+        task = send_welcome_emails.delay()
 
-        return render(request, 'success.html')
+        return render(request, 'success.html', {
+            'task_id': task.id
+        })
 
     return redirect('home')
 
+
+
+def task_status(request, task_id):
+    task = AsyncResult(task_id)
+
+    return JsonResponse({
+        'task_id': task_id,
+        'state': task.state,
+        'result': task.result if task.ready() else None
+    })
 
 
 # THIS IS WITHOUT CELERY NORMAL EMAIL SENDING

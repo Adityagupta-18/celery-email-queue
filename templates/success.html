@@ -5,6 +5,50 @@
 </head>
 <body style="font-family: sans-serif; text-align: center; margin-top: 100px;">
     <h1>✅ Sent {{ count }} emails!</h1>
+    <p>Task ID: {{ task_id }}</p>
+    
+    <h2>Email Task Status</h2>
+    
+    <p>Task ID: {{ task_id }}</p>
+    
+    <p>
+        Status: <strong id="task-state">PENDING</strong>
+    </p>
+    
+    <p id="task-result"></p>
+    
     <a href="{% url 'home' %}">Go back</a>
+    <br>
+    <a href="{% url 'task_status' task_id=task_id %}">View task status</a>
+
+    
+    <script>
+    const taskId = "{{ task_id }}";
+
+    async function checkTaskStatus() {
+        const response = await fetch(`/task-status/${taskId}/`);
+        const data = await response.json();
+
+        document.getElementById('task-state').textContent = data.state;
+
+        if (data.state === 'SUCCESS') {
+            document.getElementById('task-result').textContent =
+                `Successfully processed ${data.result} emails!`;
+            return;
+        }
+
+        if (data.state === 'FAILURE') {
+            document.getElementById('task-result').textContent =
+                'Task failed. Please check the worker logs.';
+            return;
+        }
+
+        setTimeout(checkTaskStatus, 2000);
+    }
+
+    checkTaskStatus();
+</script>
+
+
 </body>
 </html>
