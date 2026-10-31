@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.core.mail import send_mail
 from django.conf import settings
+from .tasks import send_welcome_emails
 
 # Create your views here.
 def home(request):
@@ -9,28 +10,39 @@ def home(request):
 
 
 def mail_sent(request):
-    recipients = [  # Your actual Gmail
-        'user1@example.com',
-        'user2@example.com',
-        'user3@example.com',
-        'user4@example.com',
-        'user5@example.com',
-        'user6@example.com',
-        'user7@example.com',
-        'user8@example.com',
-        'aditya.work018@gmail.com',
-    ]
+    if request.method == 'POST':
+        send_welcome_emails.delay()
 
-    count = 0
+        return render(request, 'success.html')
 
-    for email in recipients:
-        send_mail(
-            subject='Welcome!',
-            message='Welcome to our Celery Email Demo project!',
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[email],
-            fail_silently=False
-        )
-        count += 1
+    return redirect('home')
 
-    return render(request, 'success.html', {'count': count})
+
+
+# THIS IS WITHOUT CELERY NORMAL EMAIL SENDING
+# def mail_sent(request):
+#     recipients = [  # Your actual Gmail
+#         'user1@example.com',
+#         'user2@example.com',
+#         'user3@example.com',
+#         'user4@example.com',
+#         'user5@example.com',
+#         'user6@example.com',
+#         'user7@example.com',
+#         'user8@example.com',
+#         'aditya.work018@gmail.com',
+#     ]
+
+#     count = 0
+
+#     for email in recipients:
+#         send_mail(
+#             subject='Welcome!',
+#             message='Welcome to our Celery Email Demo project!',
+#             from_email=settings.EMAIL_HOST_USER,
+#             recipient_list=[email],
+#             fail_silently=False
+#         )
+#         count += 1
+
+#     return render(request, 'success.html', {'count': count})
