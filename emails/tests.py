@@ -18,6 +18,6 @@ class EmailViewsTests(TestCase):
 
         response = self.client.post(reverse('mail_sender'))
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
         self.assertContains(response, 'test-task-123')
         mock_delay.assert_called_once()
