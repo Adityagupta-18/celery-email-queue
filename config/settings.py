@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from celery.schedules import crontab
 
 import config
 load_dotenv()
@@ -148,3 +149,16 @@ CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
 
 CELERY_TASK_TRACK_STARTED = True
+
+
+# celery beat
+
+CELERY_TIMEZONE = 'Asia/Kolkata'
+CELERY_ENABLE_UTC = True
+
+# CELERY_BEAT_SCHEDULE = {
+#     'send-test-emails-every-minute': {
+#         'task': 'emails.tasks.send_welcome_emails',
+#         'schedule': crontab(minute='*'),
+#     },
+# }
